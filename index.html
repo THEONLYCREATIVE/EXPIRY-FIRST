@@ -8,7 +8,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="format-detection" content="telephone=no">
   <meta name="description" content="Pharmacy Expiry Tracker - GS1 Barcode Scanner">
-  <title>Expiry Tracker</title>
+  <title>Expiry Tracker Pro</title>
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
   <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
@@ -44,7 +44,6 @@
 
   <!-- ===== MAIN APP ===== -->
   <div id="app">
-    <!-- Header -->
     <header class="header">
       <div class="header-brand">
         <div class="header-logo">
@@ -63,11 +62,9 @@
       </div>
     </header>
 
-    <!-- Main Content Area -->
     <main class="main">
       <!-- HOME PAGE -->
       <section id="page-home" class="page active">
-        <!-- Single Barcode Input -->
         <div class="card">
           <div class="card-header">
             <span class="card-icon">📝</span>
@@ -77,28 +74,22 @@
             <input type="text" id="inputBarcode" class="input-barcode" 
               placeholder="Scan or paste GS1 barcode..." 
               autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-            <p class="input-hint">Press Enter or paste to process automatically</p>
+            <p class="input-hint">Enter GS1 DataMatrix or Raw Barcode</p>
           </div>
         </div>
 
-        <!-- Bulk Paste -->
         <div class="card">
           <div class="card-header clickable" onclick="toggleBulk()">
             <span class="card-icon">📋</span>
             <span class="card-title">Bulk Paste</span>
             <span class="card-toggle" id="bulkToggle">▼</span>
           </div>
-          <div class="card-body" id="bulkArea">
+          <div class="card-body hidden" id="bulkArea">
             <textarea id="inputBulk" class="input-bulk" rows="5" 
-              placeholder="Paste multiple barcodes (one per line)...
-
-Supports 500+ barcodes from Excel
-Each line = one GS1 barcode"></textarea>
+              placeholder="Paste multiple barcodes..."></textarea>
             <div class="bulk-info">
               <span id="bulkCount">0 lines</span>
-              <button class="btn btn-success" id="btnProcessBulk">
-                <span>⚡</span> Process All
-              </button>
+              <button class="btn btn-success" id="btnProcessBulk">⚡ Process All</button>
             </div>
             <div class="progress-bar" id="bulkProgress">
               <div class="progress-fill" id="bulkProgressFill"></div>
@@ -107,39 +98,34 @@ Each line = one GS1 barcode"></textarea>
           </div>
         </div>
 
-        <!-- Scanner -->
         <div class="card">
           <div class="card-header">
             <span class="card-icon">📷</span>
             <span class="card-title">Camera Scanner</span>
           </div>
           <div class="card-body">
-            <button class="btn btn-primary btn-full" id="btnScanner">
-              <span>📷</span> Open Camera
-            </button>
+            <button class="btn btn-primary btn-full" id="btnScanner">📷 Open Camera</button>
             <div id="scannerBox" class="scanner-box">
               <div id="reader"></div>
             </div>
           </div>
         </div>
 
-        <!-- Stats -->
         <div class="stats-row">
-          <div class="stat-card expired" onclick="filterBy('expired')">
+          <div class="stat-card expired">
             <span class="stat-value" id="statExpired">0</span>
             <span class="stat-label">Expired</span>
           </div>
-          <div class="stat-card expiring" onclick="filterBy('expiring')">
+          <div class="stat-card expiring">
             <span class="stat-value" id="statExpiring">0</span>
             <span class="stat-label">Expiring</span>
           </div>
-          <div class="stat-card ok" onclick="filterBy('ok')">
+          <div class="stat-card ok">
             <span class="stat-value" id="statOk">0</span>
             <span class="stat-label">OK</span>
           </div>
         </div>
 
-        <!-- Recent Scans -->
         <div class="section-header">
           <h2>Recent Scans</h2>
           <button class="link-btn" onclick="showPage('history')">View All →</button>
@@ -151,13 +137,12 @@ Each line = one GS1 barcode"></textarea>
       <section id="page-history" class="page">
         <div class="search-box">
           <span class="search-icon">🔍</span>
-          <input type="text" id="inputSearch" placeholder="Search products...">
+          <input type="text" id="inputSearch" placeholder="Search by RMS, Name or GTIN...">
         </div>
         <div class="filter-tabs">
           <button class="filter-tab active" data-filter="all">All</button>
           <button class="filter-tab" data-filter="expired">Expired</button>
-          <button class="filter-tab" data-filter="expiring">Expiring</button>
-          <button class="filter-tab" data-filter="ok">OK</button>
+          <button class="filter-tab" data-filter="expiring">Near</button>
         </div>
         <div id="historyList" class="items-list"></div>
       </section>
@@ -166,64 +151,30 @@ Each line = one GS1 barcode"></textarea>
       <section id="page-master" class="page">
         <div class="master-header">
           <div class="master-count" id="masterCount">0</div>
-          <div class="master-label">Products in Database</div>
+          <div class="master-label">RMS Products Loaded</div>
         </div>
 
         <div class="card">
           <div class="card-header">
             <span class="card-icon">📤</span>
-            <span class="card-title">Upload Master Data</span>
+            <span class="card-title">Update Master Database</span>
           </div>
           <div class="card-body">
-            <p class="card-desc">Replace entire product database</p>
-            <button class="btn btn-primary btn-full" onclick="document.getElementById('fileMaster').click()">
-              <span>📂</span> Choose CSV File
-            </button>
-            <input type="file" id="fileMaster" accept=".csv,.txt" hidden>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <span class="card-icon">➕</span>
-            <span class="card-title">Append Master Data</span>
-          </div>
-          <div class="card-body">
-            <p class="card-desc">Add products to existing database</p>
-            <button class="btn btn-secondary btn-full" onclick="document.getElementById('fileAppend').click()">
-              <span>📂</span> Choose CSV File
-            </button>
-            <input type="file" id="fileAppend" accept=".csv,.txt" hidden>
+            <button class="btn btn-primary btn-full" onclick="document.getElementById('fileMaster').click()">📂 Select CSV</button>
+            <input type="file" id="fileMaster" accept=".csv" hidden>
           </div>
         </div>
 
         <div class="card">
           <div class="card-header">
             <span class="card-icon">📝</span>
-            <span class="card-title">CSV Template</span>
+            <span class="card-title">Required CSV Format</span>
           </div>
           <div class="card-body">
-            <p class="card-desc">Download template with correct columns</p>
-            <button class="btn btn-outline btn-full" onclick="downloadTemplate()">
-              <span>📥</span> Download Template
-            </button>
             <div class="template-preview">
-              <code>gtin,barcode,name,rms,description</code><br>
-              <code>06291107439358,06291107439358,Zyrtec 75ml,220155756,Description</code>
+              <code>gtin,rms,barcode,name,price,supplier,return</code>
             </div>
-          </div>
-        </div>
-
-        <div class="card danger">
-          <div class="card-header">
-            <span class="card-icon">🗑️</span>
-            <span class="card-title">Reset Master Data</span>
-          </div>
-          <div class="card-body">
-            <p class="card-desc">Clear all products from database</p>
-            <button class="btn btn-danger btn-full" onclick="resetMaster()">
-              <span>⚠️</span> Reset Database
-            </button>
+            <p class="card-desc">RMS is mandatory for identification.</p>
           </div>
         </div>
       </section>
@@ -231,188 +182,86 @@ Each line = one GS1 barcode"></textarea>
       <!-- SETTINGS PAGE -->
       <section id="page-settings" class="page">
         <div class="card">
-          <div class="card-header">
-            <span class="card-icon">🌐</span>
-            <span class="card-title">API Lookup</span>
-          </div>
+          <div class="card-header"><span class="card-icon">📊</span> Export</div>
           <div class="card-body">
-            <div class="setting-row">
-              <div>
-                <p class="setting-title">Auto-lookup unknown products</p>
-                <p class="setting-desc">Search Brocade, OpenFoodFacts, UPCitemdb</p>
-              </div>
-              <label class="toggle">
-                <input type="checkbox" id="toggleAPI" checked>
-                <span class="toggle-slider"></span>
-              </label>
-            </div>
+            <button class="btn btn-primary btn-full" onclick="exportCSV()">📥 Download CSV Report</button>
           </div>
         </div>
-
-        <div class="card">
-          <div class="card-header">
-            <span class="card-icon">📊</span>
-            <span class="card-title">Export Data</span>
-          </div>
-          <div class="card-body">
-            <p class="card-desc">Download scanned items as CSV</p>
-            <button class="btn btn-primary btn-full" onclick="exportCSV()">
-              <span>📥</span> Export CSV
-            </button>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <span class="card-icon">💾</span>
-            <span class="card-title">Backup & Restore</span>
-          </div>
-          <div class="card-body">
-            <div class="btn-group">
-              <button class="btn btn-secondary" onclick="downloadBackup()">
-                <span>💾</span> Backup
-              </button>
-              <button class="btn btn-secondary" onclick="document.getElementById('fileRestore').click()">
-                <span>📥</span> Restore
-              </button>
-            </div>
-            <input type="file" id="fileRestore" accept=".json" hidden>
-          </div>
-        </div>
-
-        <div class="card danger">
-          <div class="card-header">
-            <span class="card-icon">🗑️</span>
-            <span class="card-title">Clear History</span>
-          </div>
-          <div class="card-body">
-            <p class="card-desc">Remove all scanned items</p>
-            <button class="btn btn-danger btn-full" onclick="clearHistory()">
-              <span>⚠️</span> Clear All History
-            </button>
-          </div>
-        </div>
-
         <div class="app-info">
-          <p>Expiry Tracker v5.2.0</p>
-          <p>AI Startup by VYSAKH</p>
+          <p>Expiry Tracker Pro v5.2.0</p>
+          <p>By VYSAKH</p>
         </div>
       </section>
     </main>
 
     <!-- Bottom Navigation -->
     <nav class="bottom-nav">
-      <button class="nav-btn active" data-page="home">
-        <span class="nav-icon">🏠</span>
-        <span class="nav-label">Home</span>
-      </button>
-      <button class="nav-btn" data-page="history">
-        <span class="nav-icon">📋</span>
-        <span class="nav-label">History</span>
-      </button>
-      <button class="nav-btn" data-page="master">
-        <span class="nav-icon">📦</span>
-        <span class="nav-label">Master</span>
-      </button>
-      <button class="nav-btn" data-page="settings">
-        <span class="nav-icon">⚙️</span>
-        <span class="nav-label">Settings</span>
-      </button>
+      <button class="nav-btn active" data-page="home">🏠<span>Home</span></button>
+      <button class="nav-btn" data-page="history">📋<span>History</span></button>
+      <button class="nav-btn" data-page="master">📦<span>Master</span></button>
+      <button class="nav-btn" data-page="settings">⚙️<span>Settings</span></button>
     </nav>
   </div>
 
-  <!-- Side Menu -->
+  <!-- SIDE MENU & MODALS -->
   <div id="menuOverlay" class="menu-overlay" onclick="closeMenu()"></div>
   <div id="sideMenu" class="side-menu">
-    <div class="menu-header">
-      <span>Menu</span>
-      <button class="menu-close" onclick="closeMenu()">✕</button>
-    </div>
+    <div class="menu-header"><span>Options</span><button onclick="closeMenu()">✕</button></div>
     <div class="menu-items">
-      <button class="menu-item" onclick="exportCSV(); closeMenu();">
-        <span>📊</span> Export CSV
-      </button>
-      <button class="menu-item" onclick="downloadBackup(); closeMenu();">
-        <span>💾</span> Download Backup
-      </button>
-      <button class="menu-item" onclick="downloadTemplate(); closeMenu();">
-        <span>📝</span> CSV Template
-      </button>
-      <div class="menu-divider"></div>
-      <button class="menu-item" onclick="showPage('settings'); closeMenu();">
-        <span>⚙️</span> Settings
-      </button>
-    </div>
-    <div class="menu-footer">
-      <p>Expiry Tracker v5.2.0</p>
+      <button class="menu-item" onclick="exportCSV()">📊 Export Data</button>
+      <button class="menu-item" onclick="downloadBackup()">💾 Backup Database</button>
     </div>
   </div>
 
-  <!-- Edit Modal -->
+  <!-- EDIT MODAL (Updated for Pharmacy Fields) -->
   <div id="editModal" class="modal-overlay">
     <div class="modal">
-      <div class="modal-header">
-        <span>Edit Item</span>
-        <button class="modal-close" onclick="closeModal()">✕</button>
-      </div>
+      <div class="modal-header"><span>Edit Record</span><button onclick="closeModal()">✕</button></div>
       <div class="modal-body">
         <input type="hidden" id="editId">
         <div class="form-group">
           <label>Product Name</label>
           <input type="text" id="editName" class="form-input">
         </div>
-        <div class="form-group">
-          <label>GTIN / Barcode</label>
-          <input type="text" id="editGtin" class="form-input" readonly>
-        </div>
-        <div class="form-group">
-          <label>Expiry Date</label>
-          <input type="date" id="editExpiry" class="form-input">
-        </div>
-        <div class="form-group">
-          <label>Batch Number</label>
-          <input type="text" id="editBatch" class="form-input">
-        </div>
         <div class="form-row">
-          <div class="form-group">
-            <label>Quantity</label>
-            <input type="number" id="editQty" class="form-input" min="1">
-          </div>
           <div class="form-group">
             <label>RMS Code</label>
             <input type="text" id="editRms" class="form-input">
+          </div>
+          <div class="form-group">
+            <label>Quantity</label>
+            <input type="number" id="editQty" class="form-input">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>GTIN</label>
+          <input type="text" id="editGtin" class="form-input" readonly>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Expiry Date</label>
+            <input type="date" id="editExpiry" class="form-input">
+          </div>
+          <div class="form-group">
+            <label>Batch</label>
+            <input type="text" id="editBatch" class="form-input">
           </div>
         </div>
         <div class="form-group">
           <label>Supplier</label>
           <input type="text" id="editSupplier" class="form-input">
         </div>
-        <div class="form-group">
-          <label>Returnable</label>
-          <select id="editReturnable" class="form-input">
-            <option value="">-- Select --</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-          </select>
-        </div>
       </div>
       <div class="modal-footer">
         <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-        <button class="btn btn-primary" onclick="saveEdit()">Save</button>
+        <button class="btn btn-primary" onclick="saveEdit()">Save Changes</button>
       </div>
     </div>
   </div>
 
-  <!-- Toast Container -->
   <div id="toasts" class="toast-container"></div>
-
-  <!-- Loading Overlay -->
-  <div id="loading" class="loading-overlay">
-    <div class="loading-spinner"></div>
-    <p id="loadingText">Loading...</p>
-  </div>
+  <div id="loading" class="loading-overlay"><div class="loading-spinner"></div><p id="loadingText">Loading...</p></div>
 
   <script src="app.js"></script>
-  <script src="master-data.js"></script>
 </body>
 </html>

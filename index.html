@@ -17,7 +17,6 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <!-- ===== SPLASH SCREEN ===== -->
   <div id="splash">
     <div class="splash-content">
       <div class="splash-logo">
@@ -42,7 +41,6 @@
     </div>
   </div>
 
-  <!-- ===== MAIN APP ===== -->
   <div id="app">
     <header class="header">
       <div class="header-brand">
@@ -63,7 +61,6 @@
     </header>
 
     <main class="main">
-      <!-- HOME PAGE -->
       <section id="page-home" class="page active">
         <div class="card">
           <div class="card-header">
@@ -133,7 +130,6 @@
         <div id="recentList" class="items-list"></div>
       </section>
 
-      <!-- HISTORY PAGE -->
       <section id="page-history" class="page">
         <div class="search-box">
           <span class="search-icon">🔍</span>
@@ -147,7 +143,6 @@
         <div id="historyList" class="items-list"></div>
       </section>
 
-      <!-- MASTER DATA PAGE -->
       <section id="page-master" class="page">
         <div class="master-header">
           <div class="master-count" id="masterCount">0</div>
@@ -179,7 +174,6 @@
         </div>
       </section>
 
-      <!-- SETTINGS PAGE -->
       <section id="page-settings" class="page">
         <div class="card">
           <div class="card-header"><span class="card-icon">📊</span> Export</div>
@@ -194,7 +188,6 @@
       </section>
     </main>
 
-    <!-- Bottom Navigation -->
     <nav class="bottom-nav">
       <button class="nav-btn active" data-page="home">🏠<span>Home</span></button>
       <button class="nav-btn" data-page="history">📋<span>History</span></button>
@@ -203,17 +196,17 @@
     </nav>
   </div>
 
-  <!-- SIDE MENU & MODALS -->
   <div id="menuOverlay" class="menu-overlay" onclick="closeMenu()"></div>
   <div id="sideMenu" class="side-menu">
     <div class="menu-header"><span>Options</span><button onclick="closeMenu()">✕</button></div>
     <div class="menu-items">
       <button class="menu-item" onclick="exportCSV()">📊 Export Data</button>
       <button class="menu-item" onclick="downloadBackup()">💾 Backup Database</button>
+      <button class="menu-item" onclick="document.getElementById('fileRestore').click()">📂 Restore Backup</button>
+      <input type="file" id="fileRestore" accept=".json" hidden>
     </div>
   </div>
 
-  <!-- EDIT MODAL (Updated for Pharmacy Fields) -->
   <div id="editModal" class="modal-overlay">
     <div class="modal">
       <div class="modal-header"><span>Edit Record</span><button onclick="closeModal()">✕</button></div>
